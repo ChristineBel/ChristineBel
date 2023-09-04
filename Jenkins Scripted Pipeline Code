@@ -1,0 +1,43 @@
+    def mavenHome = tool name: "maven3.8.6"
+    stage('1cloneCode'){
+        git "https://github.com/christinedee/maven-web-application"
+       //sh "git clone https://github.com/christinedee/maven-web-application" (this is in case server on which jenkins is installed is a Linux server)
+       //bat "git clone https://github.com/christinedee/maven-web-application" (this is in case server on which jenkins is installed is a Windows server)
+    }    
+    stage('2Test&Build'){
+        sh "${mavenHome}/bin/mvn clean package"
+        //bat "${mavenHome}/bin/mvn clean package" (for windows)
+    }
+    
+     stage('3codeQuality'){
+        sh "${mavenHome}/bin/mvn sonar:sonar"
+        //bat "${mavenHome}/bin/mvn sonar:sonar" (for windows)
+     }
+     stage('4uploadArtifacts'){
+        sh "${mavenHome}/bin/mvn deploy"
+        //bat "${mavenHome}/bin/mvn deploy" (for windows)
+     }
+     stage('5deploy2UAT'){
+     sh "echo 'deploy to UAT' "
+     //bat "echo 'deploy to UAT' "(for Windows)
+     deploy adapters: [tomcat9(credentialsId: 'deployment', path: '', url: 'http://3.101.60.30:8080/')], contextPath: null, war: 'target/*war'
+     }
+     stage('6approvalGate'){
+        timeout(time:5, unit:'HOURS'){
+            input message: "Application ready for deployment, please review and approve."
+        } 
+     }
+     stage('7deploy2Prod'){
+         deploy adapters: [tomcat9(credentialsId: 'deployment', path: '', url: 'http://3.101.60.30:8080/')], contextPath: null, war: 'target/*war'
+     }
+     stage('8emailNotifications'){
+        //the below content is generated via generate pipeline --> email extended --> generate blablabla. then copy and paste here
+        // emailext body: '''Final version.
+//Check build status
+
+
+//Dominions Systems''', recipientProviders: [buildUser(), developers(), upstreamDevelopers(), requestor(), brokenBuildSuspects()], subject: 'Build Status', to: 'nayalea353@gmail.com'
+         
+     }
+    }
+     
