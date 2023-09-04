@@ -1,0 +1,58 @@
+pipeline{
+agent: any
+tools {
+maven "maven3.8.6"
+}
+stages {
+stage('1Cloning){
+steps{
+sh "echo 'cloning the latest application version'"
+sh "git clone repolink or git "repolink" (this only works for public repositories)
+// for private repositories, generate a pipeline syntax , select git, copy the link and paste on script right below 'sh' and it should look like this
+git branch: 'branchName', credentialsId: 'token generated', url: 'repolink'
+//NB: git branch only shows up if you specified a branch
+}
+}
+stage('2Test+Build'){
+steps{
+sh "echo 'scanning JUnit -test-cases'"
+sh "echo 'testing must be passed to create artifacts'"
+sh "mvn clean package"
+}
+}
+stage('3Code Quality'){
+steps{
+sh "echo 'running code quality analysis'"
+// it's not a must to add the "echo" lines
+sh "mvn sonar:sonar"
+}
+}
+stage ('4Upload2Nexus'){
+steps{
+sh "echo 'uploading to Nexus'"
+sh "mvn deploy"
+}
+}
+stage ('5deploy2UAT'){
+steps{
+//generate pipeline syntax and select deploy to container, fill in all the information needed, copy the generated pipeline syntax and paste here. 
+// generated syntax should look like this:
+// deploy adapters: [tomcat9(credentialsId: "id", path: "here" , url: "tomcat url")], contextPath "/opt/webapps" , war: 'target/*war'
+}
+}
+stage('6deploy2prod'){
+steps{
+//generate pipeline syntax like in previous stage and paste here
+}
+}
+}
+posts{
+always{
+//pipeline syntax for extended email should be generated and posted here. Pass an understandable message eg 'check build status'
+}
+success{ //pipeline syntax for extended email should be generated and posted here: Pass a success message eg "build success"
+}
+failure{ //pipeline syntax with failure message eg "build failure"
+}
+}
+}
