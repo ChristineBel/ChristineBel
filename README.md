@@ -1,6 +1,6 @@
 -  Hi, I’m @ChristineBel
   I’m a Junior Devops Engineer at Dominion Systems Inc and I'm highly interested in automation.
-- My most important point of focuse is CI/CD with Jenkins. ...
+- My most important point of focus is CI/CD with Jenkins. 
   In this account, I will be documenting automation scripts made by me.
 - If you are willing to reach out for anything, please send me an email at dbeliby95@gmail.com
 
